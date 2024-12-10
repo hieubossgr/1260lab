@@ -1,0 +1,7 @@
+.terraform.tfstate*
+.terraform*
+.terragrunt-cache/*
+*.tfstate
+terraform.tfstate
+.terragrunt-cache\
+.terraform.lock.hcl
