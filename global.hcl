@@ -10,20 +10,16 @@ locals {
     #VPC
     vpc_settings = {
         name = "${local.env}-${local.project_name}"
-        cidr = "10.0.0.0/16"
+        cidr = "192.168.0.0/16"
         azs             = ["${local.region}a", "${local.region}c"]
-        private_subnets = ["10.0.1.0/24", "10.0.2.0/24" ]
-        public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
+        private_subnets = ["192.168.1.0/24", "192.168.2.0/24" ]
+        public_subnets  = ["192.168.101.0/24", "192.168.102.0/24"]
 
         enable_nat_gateway =  true
         single_nat_gateway   =  true
         enable_vpn_gateway =  false
-
-        tags = {
-            project = "${local.project_name}"
-            name = "${local.project_name}-${local.env}"
-            terraform = true
-        }    
+        manage_default_security_group = false
+        manage_default_route_table = false
     }
 
     #EC2 Bastion
@@ -548,4 +544,11 @@ locals {
             Project     = "Example"
         }        
     }
+
+    tags = {
+      CreatedBy = "HieuNT",
+      Environment = "${local.env}"
+      Project = "${local.project_name}"
+      Terraform = true
+  }
 }
