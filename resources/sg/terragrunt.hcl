@@ -4,6 +4,6 @@ include "root" {
 }
 
 include "modules" {
-    path = "${dirname(find_in_parent_folders())}/modules/${basename(get_terragrunt_dir())}.hcl"
+    path = "${dirname(find_in_parent_folders())}/modules/hieunt/${basename(get_terragrunt_dir())}.hcl"
 }
 
