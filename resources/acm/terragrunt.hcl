@@ -3,5 +3,5 @@ include "root" {
 }
 
 include "modules" {
-  path = "${dirname(find_in_parent_folders())}/modules/acm.hcl"
+  path = "${dirname(find_in_parent_folders())}/modules/hieunt/acm.hcl"
 }
