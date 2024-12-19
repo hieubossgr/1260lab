@@ -1,7 +1,7 @@
 locals {
 
     #metadata
-    project_name = "metaverse"
+    project_name = "hnt-metaverse"
     region_vars  = read_terragrunt_config(find_in_parent_folders("region.hcl", "region.hcl"))
     env_vars     = read_terragrunt_config(find_in_parent_folders("env.hcl", "env.hcl"))
     region       = local.region_vars.locals.region
