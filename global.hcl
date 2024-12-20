@@ -58,7 +58,7 @@ locals {
     #S3 bucket
     s3_settings = {
         force_destroy = true
-        bucket_name = "${local.env}-${local.project_name}-bucket22"
+        bucket_name = "${local.env}-${local.project_name}"
         # acl = "private"
         block_public_acls       = true
         block_public_policy     = true
