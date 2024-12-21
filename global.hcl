@@ -27,31 +27,17 @@ locals {
         uat = {
             name =  lower("${local.env}")
             ami = "ami-07c589821f2b353aa"
-            instance_type          = "t3.small"
+            instance_type          = "t3.micro"
             monitoring             = false
             create_spot_instance = false
             spot_type            = "persistent"
-            
-            tags = {
-                Name = "${local.env}-${local.project_name}-bastion"
-                Terraform = "true"
-                Environment = "${local.env}"
-                Project = "${local.project_name}"
-            }
         }
         prod = {
             name =  lower("${local.env}")
             ami = "ami-07c589821f2b353aa"
             instance_type          = "t3.small"
             monitoring             = true
-            create_spot_instance = false
-
-            tags = {
-                Name = "${local.env}-${local.project_name}-bastion"
-                Terraform = "true"
-                Environment = "${local.env}"
-                Project = "${local.project_name}"
-            }            
+            create_spot_instance = false          
         }
     }
 
@@ -178,11 +164,7 @@ locals {
           "namespace" = "aws:elasticbeanstalk:container:php:phpini"
           "value"     = "/public"
         }
-        ]
-        tags = {
-            Env  = "${local.env}"
-            Project = local.project_name
-        }        
+        ]      
     }
     
     #Crawler ASG
@@ -316,12 +298,6 @@ locals {
             # tags          = { WhatAmI = "SpotInstanceRequest" }
             # }
         ]
-
-        tags = {
-            Environment = "${local.env}"
-            Project     = "${local.project_name}"
-            Name        = "${local.env}-${local.project_name}-asg"
-        }
     }
 
     #WAF settings
@@ -367,11 +343,6 @@ locals {
             }
             }
         ]
-
-        tags = {
-            "Name" = "${local.env}-${local.project_name}-waf-setup"
-            "Env"  = "${local.env}"
-        }
     }
     
     #Route53
@@ -388,12 +359,7 @@ locals {
             dev   = "dev.${lower(local.project_name)}.local"
             prod  = "stage.${lower(local.project_name)}.local"
             stage = "${lower(local.project_name)}.local"
-        }
-        tags = {
-            Name = "${local.project_name}.${local.root_domain}"
-            Env = "${local.env}"
-            Project = "${local.project_name}"
-        }        
+        }       
     }
 
     #Database
@@ -410,12 +376,7 @@ locals {
         storage_encrypted   = true
         apply_immediately   = true
         monitoring_interval = 10
-        enabled_cloudwatch_logs_exports = ["postgresql"]
-        tags = {
-            Environment = "${local.env}"
-            Terraform   = "true"
-            Project = "${local.project_name}"
-        }        
+        enabled_cloudwatch_logs_exports = ["postgresql"]    
     }
 
     #ECS
@@ -537,12 +498,7 @@ locals {
                 }
             }
             }
-        }
-
-        tags = {
-            Environment = "Development"
-            Project     = "Example"
-        }        
+        }      
     }
 
     tags = {
