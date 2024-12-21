@@ -19,7 +19,19 @@ resource "aws_iam_policy" "ec2_policy" {
           "application-autoscaling:*",
           "autoscaling-plans:*",
           "autoscaling:*",
-          "elasticloadbalancing:*"
+          "elasticloadbalancing:*",
+          "ssm:DescribeInstanceInformation",
+          "ssm:DescribeSessions",
+          "ssm:GetDeployablePatchSnapshotForInstance",
+          "ssm:GetDocument",
+          "ssm:DescribeDocument",
+          "ssm:ListInventoryEntries",
+          "ssm:UpdateInstanceInformation",
+          "ssm:ListCommands",
+          "ssm:ListCommandInvocations",
+          "ssm:StartSession",
+          "ssm:TerminateSession",
+          "ssm:GetConnectionStatus"
         ]
         Effect   = "Allow"
         Resource = "*",
