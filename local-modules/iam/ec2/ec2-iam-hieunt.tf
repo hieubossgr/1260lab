@@ -1,7 +1,6 @@
 resource "aws_iam_policy" "ec2_policy" {
   name        = "bastion_policy"
-  path        = "/"
-  description = "s3_access_policy"
+  description = "Policy for EC2 Bastion to use SSM and Cloudwatch Logs and S3"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
@@ -10,16 +9,6 @@ resource "aws_iam_policy" "ec2_policy" {
     Statement = [
       {
         Action = [
-          "cloudfront:*",
-          "s3:*",
-          "elasticbeanstalk:*",
-          "ec2:*",
-          "cloudformation:*",
-          "logs:*",
-          "application-autoscaling:*",
-          "autoscaling-plans:*",
-          "autoscaling:*",
-          "elasticloadbalancing:*",
           "ssm:DescribeInstanceInformation",
           "ssm:DescribeSessions",
           "ssm:GetDeployablePatchSnapshotForInstance",
@@ -37,6 +26,35 @@ resource "aws_iam_policy" "ec2_policy" {
         Resource = "*",
         Sid      = "MultiService"
       },
+
+      {
+        "Action": [
+          "ec2:DescribeInstances",
+          "ec2:DescribeImages",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeKeyPairs",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeLaunchTemplates",
+          "ec2:DescribeLaunchTemplateVersions",
+          "logs:CreateLogGroup",
+          "logs:PutRetentionPolicy",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams",
+          "cloudfront:*",
+          "elasticbeanstalk:*",
+          "s3:*",
+          "autoscaling:*",
+          "elasticloadbalancing:*",
+          "cloudformation:*",
+          "application-autoscaling:*",
+          "autoscaling-plans:*"
+        ],
+        "Effect": "Allow",
+        "Resource": "*",
+        "Sid": "BastionInstancePermissions"
+		  }
     ]
   })
 }
