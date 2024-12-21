@@ -30,4 +30,7 @@ inputs = {
         }
         ]
     })
+    tags = merge(local.tags, {
+      Name = "${local.project_name}-${local.env}-ecr"
+    })
 }
