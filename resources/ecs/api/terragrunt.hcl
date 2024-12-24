@@ -3,7 +3,7 @@ include "root" {
 }
 
 include "modules" {
-    path = "${dirname(find_in_parent_folders())}/modules/ecs.hcl"
+    path = "${dirname(find_in_parent_folders())}/modules/hieunt/ecs.hcl"
 }
 
 locals {
@@ -11,6 +11,7 @@ locals {
   env_vars      = read_terragrunt_config(find_in_parent_folders("env.hcl"), {})
   env           = local.env_vars.locals.env
   project_name  = local.global_vars.locals.project_name
+  tags          = local.global_vars.locals.tags
 }
 
 dependency "alb" {
@@ -42,11 +43,11 @@ inputs = {
           cpu       = 1024
           memory    = 2048
           essential = true
-          image     = "058264176381.dkr.ecr.ap-northeast-1.amazonaws.com/uat-extramile-repo:v1"
+          image     = "public.ecr.aws/nginx/nginx:stable-perl"
           port_mappings = [
             {
               name          = "api"
-              containerPort = 3000
+              containerPort = 80
               protocol      = "tcp"
             }
           ]
@@ -84,16 +85,16 @@ inputs = {
         service = {
           target_group_arn = dependency.alb.outputs.target_group_arns[0]
           container_name   = "api"
-          container_port   = 3000
+          container_port   = 80
         }
       }
 
       subnet_ids = dependency.vpc.outputs.private_subnets
       security_group_rules = {
-        alb_ingress_3001 = {
+        alb_ingress_80 = {
           type                     = "ingress"
           from_port                = 80
-          to_port                  = 3000
+          to_port                  = 80
           protocol                 = "tcp"
           description              = "Service port"
           cidr_blocks = ["0.0.0.0/0"]
