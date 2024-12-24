@@ -5,6 +5,7 @@ locals {
   region_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"), {})
   region = local.region_vars.locals.region
   project_name = local.global_vars.locals.project_name
+  tags = local.global_vars.locals.tags
 }
 
 include "root" {
@@ -12,7 +13,7 @@ include "root" {
 }
 
 include "modules" {
-    path = "${dirname(find_in_parent_folders())}/modules/alb.hcl"
+    path = "${dirname(find_in_parent_folders())}/modules/hieunt/alb.hcl"
 }
 
 dependency "ssl" {
@@ -24,12 +25,6 @@ dependency "ssl" {
 
 inputs = {
   name = lower("${local.env}-cms-backup-loadbalancer")
-  tags = {
-      Name        = "${local.env}-${local.project_name}-cms-backup-loadbalancer"
-      Environment = "${local.env_vars.locals.env}"
-      Project     = "${local.project_name}"
-  }
-
   http_tcp_listeners = [
     {
       port               = 80
@@ -70,7 +65,7 @@ inputs = {
         target_group_index = 0
       }]
       conditions = [{
-        host_headers = ["backup1.stakevaultnet.com"]
+        host_headers = ["backup1.hnt-metaverse.hblab.dev"]
       }]
     },
     {
@@ -80,7 +75,7 @@ inputs = {
         target_group_index = 1
       }]
       conditions = [{
-        host_headers = ["backup2.stakevaultnet.com"]
+        host_headers = ["backup2.hnt-metaverse.hblab.dev"]
       }]
     },
   ]
@@ -117,4 +112,7 @@ inputs = {
       deregistration_delay = 300
       }
   ]
+  tags = merge(local.tags, {
+    Name = "${local.env}-${local.project_name}-elb-eb"
+  })
 }
