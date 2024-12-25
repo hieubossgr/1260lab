@@ -1,5 +1,5 @@
 terraform {
-  source = "github.com/terraform-aws-modules/terraform-aws-alb.git//.?ref=v6.6.1"
+  source = "github.com/terraform-aws-modules/terraform-aws-alb.git//.?ref=v9.13.0"
 }
 locals {
   global_vars = read_terragrunt_config(find_in_parent_folders("global.hcl"), {})

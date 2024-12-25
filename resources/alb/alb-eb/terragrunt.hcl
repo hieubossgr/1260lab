@@ -25,8 +25,9 @@ dependency "ssl" {
 
 inputs = {
   name = lower("${local.env}-cms-backup-loadbalancer")
-  http_tcp_listeners = [
-    {
+
+  listeners = {
+    http_tcp_listeners = {
       port               = 80
       protocol           = "HTTP"
       target_group_index = 0
@@ -40,11 +41,9 @@ inputs = {
         path        = "/#{path}"
         query       = "#{query}"
       }
-    }
-  ]
-
-  https_listeners = [
-    {
+    },
+    
+    https_listeners = {
       port            = 443
       protocol        = "HTTPS"
       certificate_arn = dependency.ssl.outputs.acm_certificate_arn
@@ -54,35 +53,42 @@ inputs = {
         message_body = "Access denied"
         status_code  = "403"
       }
-    }
-  ]
+      rules = {
+        rule1 = {
+          priority   = 1
+          actions = [{
+            type               = "forward"
+            target_group_key = 0
+          }]
+         
+          conditions = [{
+            host_header = {
+              values = ["backup1.hnt-metaverse.hblab.dev"]
+            }
+          }]
+        }
 
-  https_listener_rules = [
-    {
-      https_listener_index = 0
-      actions = [{
-        type               = "forward"
-        target_group_index = 0
-      }]
-      conditions = [{
-        host_headers = ["backup1.hnt-metaverse.hblab.dev"]
-      }]
-    },
-    {
-      https_listener_index = 0
-      actions = [{
-        type               = "forward"
-        target_group_index = 1
-      }]
-      conditions = [{
-        host_headers = ["backup2.hnt-metaverse.hblab.dev"]
-      }]
-    },
-  ]
+        rule2 = {
+          priority   = 2
+          actions = [{
+            type               = "forward"
+            target_group_key = 1
+          }]
+         
+          conditions = [{
+            host_header = {
+              values = ["backup2.hnt-metaverse.hblab.dev"]
+            }
+          }]
+        }
+      }
+    }
+  }
 
   target_groups = [
-      {
+    {
       name             = lower("${local.env}-ell-backup-server")
+      create_attachment= false
       backend_protocol = "HTTP"
       backend_port     = 3001
       target_type          = "ip"
@@ -95,9 +101,10 @@ inputs = {
           unhealthy_threshold = 2
       }
       deregistration_delay = 300
-      },
-      {
+    },
+    {
       name             = lower("${local.env}-edutek-backup-server")
+      create_attachment= false
       backend_protocol = "HTTP"
       backend_port     = 3002
       target_type          = "ip"
@@ -110,7 +117,7 @@ inputs = {
           unhealthy_threshold = 2
       }
       deregistration_delay = 300
-      }
+    }
   ]
   tags = merge(local.tags, {
     Name = "${local.env}-${local.project_name}-elb-eb"

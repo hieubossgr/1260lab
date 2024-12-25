@@ -23,10 +23,17 @@ dependency "ssl" {
   }
 }
 
+dependency "dns" {
+  config_path = "${dirname(find_in_parent_folders())}/resources/route53"
+  mock_outputs = {
+    route53_zone_zone_id = "route53_zone_zone_id_12345"
+  }
+}
+
 inputs = {
   name = lower("${local.env}-api-loadbalancer")
-  http_tcp_listeners = [
-    {
+  listeners = {
+    http_tcp_listeners = {
       port               = 80
       protocol           = "HTTP"
       target_group_index = 0
@@ -40,11 +47,9 @@ inputs = {
         path        = "/#{path}"
         query       = "#{query}"
       }
-    }
-  ]
-
-  https_listeners = [
-    {
+    },
+    
+    https_listeners = {
       port            = 443
       protocol        = "HTTPS"
       certificate_arn = dependency.ssl.outputs.acm_certificate_arn
@@ -54,25 +59,26 @@ inputs = {
         message_body = "Access denied"
         status_code  = "403"
       }
+      rules = {
+        rule1 = {
+          priority   = 1
+          actions = [{
+            type               = "forward"
+            target_group_key = 0
+          }]
+          conditions = [{
+            host_header = {
+              values = ["api.hnt-metaverse.hblab.dev"]
+            }
+          }]
+        }
+      }
     }
-  ]
-
-  https_listener_rules = [
-    {
-      https_listener_index = 0
-      actions = [{
-        type               = "forward"
-        target_group_index = 0
-      }]
-      conditions = [{
-        host_headers = ["api.hnt-metaverse.hblab.dev"]
-      }]
-    },
-  ]
-
+  }
   target_groups = [
       {
       name             = lower("${local.project_name}-${local.env}-api")
+      create_attachment= false
       backend_protocol = "HTTP"
       backend_port     = 3000
       target_type          = "ip"
@@ -87,6 +93,14 @@ inputs = {
       deregistration_delay = 300
       }
   ]
+
+  route53_records = {
+    record1 = {
+      name = "api.hnt-metaverse.hblab.dev"
+      zone_id = dependency.dns.outputs.route53_zone_zone_id["hnt-metaverse.hblab.dev"]
+      type = "A"
+    }
+  }
 
   tags = merge(local.tags, {
     Name = "${local.env}-${local.project_name}-alb-ecs"
