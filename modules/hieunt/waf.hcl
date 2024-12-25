@@ -26,7 +26,7 @@ dependency "alb-ecs" {
 
 inputs = {
   name_prefix                = local.global_vars.locals.waf_settings["name_prefix"]
-  alb_arn_list               = [dependency.alb-eb.outputs.lb_arn, dependency.alb-ecs.outputs.lb_arn]
+  alb_arn_list               = [dependency.alb-eb.outputs.arn, dependency.alb-ecs.outputs.arn]
   scope                      = local.global_vars.locals.waf_settings["scope"]
   create_alb_association     = local.global_vars.locals.waf_settings["create_alb_association"]
   allow_default_action       = local.global_vars.locals.waf_settings["allow_default_action"] # set to allow if not specified
