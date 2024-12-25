@@ -83,7 +83,7 @@ inputs = {
 
       load_balancer = {
         service = {
-          target_group_arn = dependency.alb.outputs.target_group_arns[0]
+          target_group_arn = dependency.alb.outputs.target_groups[0]["arn"]
           container_name   = "api"
           container_port   = 80
         }
