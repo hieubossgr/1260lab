@@ -3,7 +3,7 @@ include "root" {
 }
 
 include "modules" {
-    path = "${dirname(find_in_parent_folders())}/modules/ecs.hcl"
+    path = "${dirname(find_in_parent_folders())}/modules/hieunt/ecs.hcl"
 }
 
 locals {
@@ -42,11 +42,11 @@ inputs = {
           cpu       = 1024
           memory    = 2048
           essential = true
-          image     = "058264176381.dkr.ecr.ap-northeast-1.amazonaws.com/uat-extramile-repo:crawler"
+          image     = "public.ecr.aws/aws-containers/hello-app-runner:latest"
           port_mappings = [
             {
               name          = "crawler"
-              containerPort = 3001
+              containerPort = 8000
               protocol      = "tcp"
             }
           ]
@@ -60,12 +60,20 @@ inputs = {
 
       }
 
+      load_balancer = {
+        service = {
+          target_group_arn = dependency.alb.outputs.target_groups[0]["arn"]
+          container_name   = "crawler"
+          container_port   = 8000
+        }
+      }
+
       subnet_ids = dependency.vpc.outputs.private_subnets
       security_group_rules = {
-        alb_ingress_3001 = {
+        alb_ingress_8080 = {
           type                     = "ingress"
           from_port                = 80
-          to_port                  = 3001
+          to_port                  = 8000
           protocol                 = "tcp"
           description              = "Service port"
           cidr_blocks = ["0.0.0.0/0"]
