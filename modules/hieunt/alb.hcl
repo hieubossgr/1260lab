@@ -28,4 +28,5 @@ inputs = {
     subnets                     = dependency.vpc.outputs.public_subnets
     create_security_group       = local.global_vars.locals.alb_settings["create_security_group"]
     security_groups             = [ dependency.sg.outputs.alb_sg ]
+    enable_deletion_protection  = false
 }
