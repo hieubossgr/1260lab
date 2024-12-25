@@ -23,6 +23,13 @@ dependency "ssl" {
   }
 }
 
+dependency "dns" {
+  config_path = "${dirname(find_in_parent_folders())}/resources/route53"
+  mock_outputs = {
+    route53_zone_zone_id = "zoneid-12345"
+  }
+}
+
 inputs = {
   name = lower("${local.env}-cms-backup-loadbalancer")
 
@@ -119,6 +126,21 @@ inputs = {
       deregistration_delay = 300
     }
   ]
+
+  route53_records = {
+    record1 = {
+      name = "backup1.hnt-metaverse.hblab.dev"
+      zone_id = dependency.dns.outputs.route53_zone_zone_id["hnt-metaverse.hblab.dev"]
+      type = "A"
+    },
+
+    record2 = {
+      name = "backup2.hnt-metaverse.hblab.dev"
+      zone_id = dependency.dns.outputs.route53_zone_zone_id["hnt-metaverse.hblab.dev"]
+      type = "A"
+    }
+  }
+  
   tags = merge(local.tags, {
     Name = "${local.env}-${local.project_name}-elb-eb"
   })
