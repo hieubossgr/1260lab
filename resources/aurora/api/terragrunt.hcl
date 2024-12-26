@@ -3,7 +3,7 @@ include "root" {
 }
 
 include "modules" {
-    path = "${dirname(find_in_parent_folders())}/modules/aurora.hcl"
+    path = "${dirname(find_in_parent_folders())}/modules/hieunt/aurora.hcl"
 }
 
 locals {
@@ -18,7 +18,7 @@ inputs = {
     name = "${local.env}-${local.project_name}-db"
     instances = {
         writer = {}
-        reader = {}
+        # reader = {}
     }
 }
 
