@@ -11,7 +11,7 @@ locals {
 }
 
 include "modules" {
-    path = "${dirname(find_in_parent_folders())}/modules/eb-app.hcl"
+    path = "${dirname(find_in_parent_folders())}/modules/hieunt/eb-app.hcl"
 }
 
 

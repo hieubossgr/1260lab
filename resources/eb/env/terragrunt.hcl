@@ -3,7 +3,7 @@ include "root" {
 }
 
 include "modules" {
-    path = "${dirname(find_in_parent_folders())}/modules/eb-env.hcl"
+    path = "${dirname(find_in_parent_folders())}/modules/hieunt/eb-env.hcl"
 }
 
 locals {
@@ -11,6 +11,13 @@ locals {
   env_vars      = read_terragrunt_config(find_in_parent_folders("env.hcl"), {})
   env           = local.env_vars.locals.env
   project_name  = local.global_vars.locals.project_name
+}
+
+dependency "s3_ec2" {
+  config_path = "${dirname(find_in_parent_folders())}/resources/s3"
+  mock_outputs = {
+    s3_bucket_arn = "arn:aws:s3:::*"
+  }
 }
 
 
