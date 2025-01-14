@@ -57,9 +57,9 @@ resource "aws_security_group" "ec2_sg" {
   })
 }
 
-resource "aws_security_group" "eb_sg" {
-  name        = "eb_sg_${var.project_name}"
-  description = "Allow SSH from bastion and HTTP HTTPS from ALB"
+resource "aws_security_group" "ecs_sg" {
+  name        = "ecs_sg_${var.project_name}"
+  description = "Allow  HTTP HTTPS from ALB"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -70,12 +70,10 @@ resource "aws_security_group" "eb_sg" {
   }
 
   ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-    # security_groups = [aws_security_group.ec2_sg.id]
-    cidr_blocks = ["183.91.3.171/32", "118.70.135.21/32", "101.96.117.124/32", "18.139.91.188/32"]
-    description = "Allow SSH from runner and HBLAB"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
   }
 
   ingress {

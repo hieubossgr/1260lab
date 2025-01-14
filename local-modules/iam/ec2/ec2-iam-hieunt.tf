@@ -8,26 +8,6 @@ resource "aws_iam_policy" "ec2_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = [
-          "ssm:DescribeInstanceInformation",
-          "ssm:DescribeSessions",
-          "ssm:GetDeployablePatchSnapshotForInstance",
-          "ssm:GetDocument",
-          "ssm:DescribeDocument",
-          "ssm:ListInventoryEntries",
-          "ssm:UpdateInstanceInformation",
-          "ssm:ListCommands",
-          "ssm:ListCommandInvocations",
-          "ssm:StartSession",
-          "ssm:TerminateSession",
-          "ssm:GetConnectionStatus"
-        ]
-        Effect   = "Allow"
-        Resource = "*",
-        Sid      = "MultiService"
-      },
-
-      {
         "Action": [
           "ec2:DescribeInstances",
           "ec2:DescribeImages",
@@ -89,9 +69,9 @@ resource "aws_iam_role_policy_attachment" "cloudfront_access_policy" {
   policy_arn = "arn:aws:iam::aws:policy/CloudFrontFullAccess"
 }
 
-resource "aws_iam_role_policy_attachment" "ec2_access_policy" {
+resource "aws_iam_role_policy_attachment" "ssm_policy_attachment" {
   role       = aws_iam_role.RoleBastion.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {
